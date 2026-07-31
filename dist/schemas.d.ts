@@ -16,14 +16,14 @@ export declare const feedbackPayloadSchema: z.ZodObject<{
     website: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     typ: "napad" | "chyba" | "pochvala";
-    zona: "portal" | "blog" | "bazar" | "mapa" | "akce";
+    zona: "blog" | "bazar" | "akce" | "portal" | "mapa";
     zprava: string;
     email?: string | undefined;
     url?: string | undefined;
     website?: string | undefined;
 }, {
     typ: "napad" | "chyba" | "pochvala";
-    zona: "portal" | "blog" | "bazar" | "mapa" | "akce";
+    zona: "blog" | "bazar" | "akce" | "portal" | "mapa";
     zprava: string;
     email?: string | undefined;
     url?: string | undefined;
