@@ -1,0 +1,5 @@
+node_modules
+*.log
+.DS_Store
+# dist je ZÁMĚRNĚ commitnutý — konzumenti instalují balíček jako git-dependency
+# (github:shopville-limited/dopedalu-shared#vX.Y.Z) a build nespouští.
