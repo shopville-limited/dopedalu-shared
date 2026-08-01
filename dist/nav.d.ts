@@ -1,6 +1,6 @@
 export interface PlatformNavItem {
     /** Stabilní klíč sekce; zóna jím pozná „svou" aktivní položku. */
-    key: "blog" | "bazar" | "servisy" | "akce" | "ucet";
+    key: "blog" | "bazar" | "servisy" | "akce" | "bikeparky" | "ucet";
     /** Zobrazený název (jednotný napříč zónami). */
     label: string;
     /** Cesta od kořene apex domény (cross-zone → plain <a>, ne framework <Link>). */

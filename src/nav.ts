@@ -4,7 +4,7 @@
 // ikony napříč všemi zónami. Data jsou framework-agnostická (žádný React, žádný
 // Tailwind) → sdílená v balíčku; každá zóna je vykreslí VLASTNÍMI třídami (v3/v4).
 //
-// Pořadí je závazné: Blog › Cyklobazar › Servisy › Akce › Účet.
+// Pořadí je závazné: Blog › Cyklobazar › Servisy › Akce › Bikeparky › Účet.
 //
 // Ikony jsou pole SVG `path` d-stringů pro viewBox "0 0 24 24", kreslené jako
 // outline (fill none, stroke currentColor, strokeWidth 2, linecap/join round).
@@ -12,7 +12,7 @@
 
 export interface PlatformNavItem {
   /** Stabilní klíč sekce; zóna jím pozná „svou" aktivní položku. */
-  key: "blog" | "bazar" | "servisy" | "akce" | "ucet";
+  key: "blog" | "bazar" | "servisy" | "akce" | "bikeparky" | "ucet";
   /** Zobrazený název (jednotný napříč zónami). */
   label: string;
   /** Cesta od kořene apex domény (cross-zone → plain <a>, ne framework <Link>). */
@@ -47,6 +47,8 @@ const ICON_AKCE = [
   "M3 10h18",
   "M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
 ];
+/** Ikona: hora (bikeparky / traily / singletreky). */
+const ICON_BIKEPARKY = ["m8 3 4 8 5-5 5 15H2L8 3z"];
 /** Ikona: uživatel (účet). */
 const ICON_UCET = [
   "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z",
@@ -59,6 +61,7 @@ export const PLATFORM_NAV: readonly PlatformNavItem[] = [
   { key: "bazar", label: "Cyklobazar", path: "/bazar", icon: ICON_BAZAR },
   { key: "servisy", label: "Servisy", path: "/mapa-cykloservisu", icon: ICON_SERVISY },
   { key: "akce", label: "Akce", path: "/akce", icon: ICON_AKCE },
+  { key: "bikeparky", label: "Bikeparky", path: "/bikeparky", icon: ICON_BIKEPARKY },
   { key: "ucet", label: "Účet", path: "/ucet", icon: ICON_UCET, account: true },
 ];
 
