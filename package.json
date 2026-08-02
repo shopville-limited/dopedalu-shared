@@ -1,6 +1,6 @@
 {
   "name": "@dopedalu/shared",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Framework-agnostická sdílená data + logika pro dopedalu.cz zóny (portál, blog, bazar, mapa, akce): design tokeny, cross-zone konstanty, jednotná navigace a patička, search provider a Zod schémata. Distribuováno jako HTTPS tarball z GitHub tagu; dist je commitnutý, konzumenti build nespouští.",
   "type": "module",
   "license": "UNLICENSED",
