@@ -25,5 +25,23 @@ export declare function onAnalyticsConsent(handler: () => void, options?: OnAnal
  * druhé volání nic neudělá a vrátí `false`.
  */
 export declare function injectGtm(containerId: string, doc?: Document): boolean;
+export type PathScopeOptions = {
+    /** Segment, pod kterým zóna běží (`akce`, `bikeparky`). Cesta ho mít nemusí. */
+    zone?: string;
+    /** První segmenty, pod kterými se neměří — typicky administrace. */
+    excluded?: readonly string[];
+};
+/**
+ * True, když se na téhle cestě má měřit.
+ *
+ * Administrace zón jsou interní nástroje redakce. Kdyby se měřily, ředily by
+ * čísla v GA4 a mísily chování redakce s chováním návštěvníků — u zón s desítkami
+ * návštěv denně by to bylo znát okamžitě.
+ *
+ * Přijímá cestu s prefixem zóny i bez něj. Routery (`usePathname`, `useLocation`)
+ * vracejí cestu bez basePath/basename, ale spoléhat se na to jako na jedinou
+ * pojistku u *vypnutí* měření je zbytečné riziko.
+ */
+export declare function trackingAllowedOnPath(pathname: string | null, options?: PathScopeOptions): boolean;
 export {};
 //# sourceMappingURL=analytics.d.ts.map

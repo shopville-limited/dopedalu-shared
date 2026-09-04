@@ -141,3 +141,39 @@ export function injectGtm(containerId: string, doc: Document = globalThis.docume
   doc.head.appendChild(script);
   return true;
 }
+
+export type PathScopeOptions = {
+  /** Segment, pod kterým zóna běží (`akce`, `bikeparky`). Cesta ho mít nemusí. */
+  zone?: string;
+  /** První segmenty, pod kterými se neměří — typicky administrace. */
+  excluded?: readonly string[];
+};
+
+/**
+ * True, když se na téhle cestě má měřit.
+ *
+ * Administrace zón jsou interní nástroje redakce. Kdyby se měřily, ředily by
+ * čísla v GA4 a mísily chování redakce s chováním návštěvníků — u zón s desítkami
+ * návštěv denně by to bylo znát okamžitě.
+ *
+ * Přijímá cestu s prefixem zóny i bez něj. Routery (`usePathname`, `useLocation`)
+ * vracejí cestu bez basePath/basename, ale spoléhat se na to jako na jedinou
+ * pojistku u *vypnutí* měření je zbytečné riziko.
+ */
+export function trackingAllowedOnPath(
+  pathname: string | null,
+  options: PathScopeOptions = {},
+): boolean {
+  if (!pathname) return false;
+  const excluded = options.excluded ?? [];
+  if (excluded.length === 0) return true;
+
+  const segmenty = pathname.split("/").filter(Boolean);
+  // Prefix zóny se odstraní jen tehdy, když sám není vyloučeným segmentem —
+  // jinak by zóna jménem „admin" začala měřit vlastní administraci.
+  const prvni =
+    options.zone && segmenty[0] === options.zone && !excluded.includes(options.zone)
+      ? segmenty[1]
+      : segmenty[0];
+  return !excluded.includes(prvni ?? "");
+}

@@ -5,6 +5,7 @@ import {
   gtmSnippet,
   onAnalyticsConsent,
   injectGtm,
+  trackingAllowedOnPath,
 } from "./analytics.js";
 
 /** Náhrada localStorage — jen `getItem`, víc loader nepotřebuje. */
@@ -160,5 +161,51 @@ describe("injectGtm", () => {
 
   it("bez dokumentu (SSR) vrátí false a nespadne", () => {
     expect(injectGtm("GTM-X", null as never)).toBe(false);
+  });
+});
+
+describe("trackingAllowedOnPath", () => {
+  const volby = { zone: "akce", excluded: ["admin"] };
+
+  it("měří na kořeni zóny", () => {
+    expect(trackingAllowedOnPath("/", volby)).toBe(true);
+  });
+
+  it("měří na detailu", () => {
+    expect(trackingAllowedOnPath("/brnenska-50", volby)).toBe(true);
+  });
+
+  it("NEMĚŘÍ v administraci", () => {
+    expect(trackingAllowedOnPath("/admin", volby)).toBe(false);
+  });
+
+  it("NEMĚŘÍ ani na podstránkách administrace", () => {
+    expect(trackingAllowedOnPath("/admin/akce/123", volby)).toBe(false);
+  });
+
+  it("pozná vyloučený segment i s prefixem zóny", () => {
+    // Routery vracejí cestu bez basePath/basename, ale spoléhat se na to jako
+    // na JEDINOU pojistku u *vypnutí* měření je zbytečné riziko.
+    expect(trackingAllowedOnPath("/akce/admin", volby)).toBe(false);
+  });
+
+  it("nesplete si vyloučený segment s obsahem, který ho má v názvu", () => {
+    expect(trackingAllowedOnPath("/administrativni-zavod", volby)).toBe(true);
+  });
+
+  it("před hydratací (null) neměří", () => {
+    expect(trackingAllowedOnPath(null, volby)).toBe(false);
+  });
+
+  it("bez vyloučení měří všude", () => {
+    expect(trackingAllowedOnPath("/admin", {})).toBe(true);
+  });
+
+  it("neodstraní prefix zóny, když se shoduje s vyloučeným segmentem", () => {
+    // Zóna „admin" neexistuje, ale kdyby vznikla, nesmí sama sebe odstranit
+    // a začít měřit vlastní administraci.
+    expect(trackingAllowedOnPath("/bikeparky/admin", { zone: "bikeparky", excluded: ["admin"] })).toBe(
+      false,
+    );
   });
 });
