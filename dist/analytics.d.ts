@@ -4,8 +4,6 @@ export declare const DEFAULT_GTM_ID = "GTM-5HWNN2LP";
 export declare const CONSENT_CHANGE_EVENT = "cookie-consent-change";
 /** Inline skript, který natáhne GTM. Vkládá se AŽ po souhlasu. */
 export declare function gtmSnippet(containerId: string): string;
-/** URL iframu pro <noscript>. */
-export declare function gtmNoscriptSrc(containerId: string): string;
 type Uloziste = Pick<Storage, "getItem">;
 type Cil = Pick<EventTarget, "addEventListener" | "removeEventListener">;
 export type OnAnalyticsConsentOptions = {

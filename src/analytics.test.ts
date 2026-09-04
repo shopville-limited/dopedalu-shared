@@ -3,7 +3,6 @@ import {
   DEFAULT_GTM_ID,
   CONSENT_CHANGE_EVENT,
   gtmSnippet,
-  gtmNoscriptSrc,
   onAnalyticsConsent,
   injectGtm,
 } from "./analytics.js";
@@ -35,12 +34,6 @@ describe("gtmSnippet", () => {
 
   it("dá se vložit do <script> bez rozbití — neobsahuje </script>", () => {
     expect(gtmSnippet(DEFAULT_GTM_ID)).not.toContain("</script>");
-  });
-});
-
-describe("gtmNoscriptSrc", () => {
-  it("sestaví URL iframu s ID", () => {
-    expect(gtmNoscriptSrc("GTM-X")).toBe("https://www.googletagmanager.com/ns.html?id=GTM-X");
   });
 });
 

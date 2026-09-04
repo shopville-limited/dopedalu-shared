@@ -48,10 +48,15 @@ export function gtmSnippet(containerId: string): string {
   return GTM_SNIPPET.replace("__GTM_ID__", containerId);
 }
 
-/** URL iframu pro <noscript>. */
-export function gtmNoscriptSrc(containerId: string): string {
-  return "https://www.googletagmanager.com/ns.html?id=" + containerId;
-}
+// ZÁMĚRNĚ TU NENÍ POMOCNÍK PRO <noscript> IFRAME.
+//
+// Ten iframe natáhne kontejner bez ohledu na souhlas — a návštěvník s vypnutým
+// JavaScriptem se nemá jak zeptat, protože lišta je taky JS. Byl by to přesně
+// ten únik, kvůli kterému tenhle modul vznikl. Blog ho při přechodu na
+// consent-gating zahodil; bazar a servisy si ho nesly dál.
+//
+// Kdyby ho někdy bylo potřeba (třeba pro kontejner bez měřicích tagů), musí
+// být podmíněný souhlasem serverovou cestou, ne tímhle modulem.
 
 type Uloziste = Pick<Storage, "getItem">;
 type Cil = Pick<EventTarget, "addEventListener" | "removeEventListener">;

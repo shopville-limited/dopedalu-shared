@@ -40,10 +40,6 @@ const GTM_SNIPPET = "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':n
 export function gtmSnippet(containerId) {
     return GTM_SNIPPET.replace("__GTM_ID__", containerId);
 }
-/** URL iframu pro <noscript>. */
-export function gtmNoscriptSrc(containerId) {
-    return "https://www.googletagmanager.com/ns.html?id=" + containerId;
-}
 function vychoziUloziste() {
     try {
         return typeof localStorage === "undefined" ? null : localStorage;
