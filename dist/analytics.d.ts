@@ -1,3 +1,4 @@
+import { type ConsentLevel } from "./consent.js";
 /** Produkční kontejner. Zóny ho přebíjejí přes env, prázdná hodnota loader vypne. */
 export declare const DEFAULT_GTM_ID = "GTM-5HWNN2LP";
 /** Událost, kterou lišta vystřelí po uložení volby. Nese `ConsentLevel` v `detail`. */
@@ -43,5 +44,19 @@ export type PathScopeOptions = {
  * pojistku u *vypnutí* měření je zbytečné riziko.
  */
 export declare function trackingAllowedOnPath(pathname: string | null, options?: PathScopeOptions): boolean;
+/** Produkční projekt Clarity (veřejné ID). Zóny ho přebíjejí přes env, prázdná hodnota loader vypne. */
+export declare const DEFAULT_CLARITY_ID = "ywkdkpqvm2";
+/**
+ * Inline skript, který natáhne Clarity a předá mu souhlas. Vkládá se AŽ po souhlasu.
+ * `adStorage` = návštěvník povolil i reklamní cookies (úroveň `all`).
+ */
+export declare function claritySnippet(projectId: string, adStorage?: boolean): string;
+/** Aktuální úroveň souhlasu z úložiště (pro rozhodnutí o reklamním úložišti Clarity). */
+export declare function storedConsentLevel(storage?: Uloziste | null): ConsentLevel | null;
+/**
+ * Vloží Clarity do hlavičky (Vite zóny i Next přes `useEffect`). Idempotentní —
+ * druhé volání nic neudělá a vrátí `false`.
+ */
+export declare function injectClarity(projectId: string, adStorage?: boolean, doc?: Document): boolean;
 export {};
 //# sourceMappingURL=analytics.d.ts.map

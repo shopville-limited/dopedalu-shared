@@ -6,6 +6,10 @@ import {
   onAnalyticsConsent,
   injectGtm,
   trackingAllowedOnPath,
+  DEFAULT_CLARITY_ID,
+  claritySnippet,
+  injectClarity,
+  storedConsentLevel,
 } from "./analytics.js";
 
 /** Náhrada localStorage — jen `getItem`, víc loader nepotřebuje. */
@@ -207,5 +211,40 @@ describe("trackingAllowedOnPath", () => {
     expect(trackingAllowedOnPath("/bikeparky/admin", { zone: "bikeparky", excluded: ["admin"] })).toBe(
       false,
     );
+  });
+});
+
+describe("Clarity", () => {
+  it("snippet vloží ID projektu, míří na clarity.ms a předá souhlas", () => {
+    const s = claritySnippet(DEFAULT_CLARITY_ID);
+    expect(s).toContain("ywkdkpqvm2");
+    expect(s).toContain("https://www.clarity.ms/tag/");
+    expect(s).toContain("analytics_Storage:'granted'");
+    expect(s).toContain("ad_Storage:'denied'");
+    expect(s).not.toContain("__CLARITY_ID__");
+    expect(s).not.toContain("</script>");
+  });
+
+  it("reklamní úložiště jen při souhlasu se vším", () => {
+    expect(claritySnippet("x", true)).toContain("ad_Storage:'granted'");
+  });
+
+  it("injectClarity vloží skript jednou a bez ID nic", () => {
+    const appended: { id: string }[] = [];
+    const doc = {
+      querySelector: (sel: string) => appended.find((e) => "#" + e.id === sel) ?? null,
+      createElement: () => ({ id: "", innerHTML: "" }),
+      head: { appendChild: (el: { id: string }) => appended.push(el) },
+    } as unknown as Document;
+    expect(injectClarity("abc", false, doc)).toBe(true);
+    expect(injectClarity("abc", false, doc)).toBe(false);
+    expect(appended).toHaveLength(1);
+    expect(injectClarity("", false, doc)).toBe(false);
+  });
+
+  it("storedConsentLevel čte úroveň a přežije házející úložiště", () => {
+    expect(storedConsentLevel(ulozisteS("all"))).toBe("all");
+    expect(storedConsentLevel(ulozisteKtereHazi)).toBeNull();
+    expect(storedConsentLevel(null)).toBeNull();
   });
 });
