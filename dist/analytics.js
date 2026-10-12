@@ -134,3 +134,45 @@ export function trackingAllowedOnPath(pathname, options = {}) {
         : segmenty[0];
     return !excluded.includes(prvni ?? "");
 }
+// --- Microsoft Clarity -------------------------------------------------------
+//
+// Heatmapy a záznamy relací (Clarity zapisuje `_clck`, `_clsk`, `MUID`). Stejné
+// pravidlo jako GTM: do stránky AŽ po souhlasu se statistikami — loader se volá
+// z handleru `onAnalyticsConsent`. Hned po načtení Clarity dostane volbu přes
+// Consent API v2 (`consentv2`): statistiky povolené, reklamní úložiště jen při
+// úrovni `all`.
+/** Produkční projekt Clarity (veřejné ID). Zóny ho přebíjejí přes env, prázdná hodnota loader vypne. */
+export const DEFAULT_CLARITY_ID = "ywkdkpqvm2";
+/** Id vloženého <script> Clarity. */
+const CLARITY_SCRIPT_ID = "clarity-loader";
+// Statický literál se zástupnými symboly (viz poznámka u GTM_SNIPPET — SWC v Next 15.5).
+const CLARITY_SNIPPET = "(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};" +
+    "t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;" +
+    "y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,'clarity','script','__CLARITY_ID__');" +
+    "window.clarity('consentv2',{ad_Storage:'__AD__',analytics_Storage:'granted'});";
+/**
+ * Inline skript, který natáhne Clarity a předá mu souhlas. Vkládá se AŽ po souhlasu.
+ * `adStorage` = návštěvník povolil i reklamní cookies (úroveň `all`).
+ */
+export function claritySnippet(projectId, adStorage = false) {
+    return CLARITY_SNIPPET.replace("__CLARITY_ID__", projectId).replace("__AD__", adStorage ? "granted" : "denied");
+}
+/** Aktuální úroveň souhlasu z úložiště (pro rozhodnutí o reklamním úložišti Clarity). */
+export function storedConsentLevel(storage = vychoziUloziste()) {
+    return ulozenaUroven(storage);
+}
+/**
+ * Vloží Clarity do hlavičky (Vite zóny i Next přes `useEffect`). Idempotentní —
+ * druhé volání nic neudělá a vrátí `false`.
+ */
+export function injectClarity(projectId, adStorage = false, doc = globalThis.document) {
+    if (!projectId || !doc)
+        return false;
+    if (doc.querySelector("#" + CLARITY_SCRIPT_ID))
+        return false;
+    const script = doc.createElement("script");
+    script.id = CLARITY_SCRIPT_ID;
+    script.innerHTML = claritySnippet(projectId, adStorage);
+    doc.head.appendChild(script);
+    return true;
+}
